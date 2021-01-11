@@ -110,33 +110,28 @@ print len(resList)
 
 def d_prime(conLevel): #<------ This is where I'm confused on how to actually look at the data for d' because of the two conditions for hits 1,1 and 0,0 
     cHit=0
-    cMiss=0
+    stim1Count=0
     cFA=0
-    cCR=0
+    stim0Count=0
     for x, y in enumerate(rateList):
         if y == conLevel:
                 if resList[x]<0:
                     pass
-                elif resList[x]==sidList[x]:
+                elif sidList[x]==1:
+                    stim1Count=stim1Count+1
                     if resList[x]==1:
-                        cHit+=1
-                    else:
-                        cCR+=1
+                        cHit=cHit+1
                 else:
+                    stim0Count=stim0Count+1
                     if resList[x]==1:
-                        cFA+=1
-                    else:
-                        cMiss+=1
+                        cFA=cFA+1
                     
     
-    hitRate = cHit/(cHit + cMiss)
-    faRate = cFA / (cFA+cCR)
-    
-    hitRateAdjusted = (cHit+ 0.5)/((cHit+ 0.5) + cMiss + 1)
-    faRateAdjusted = (cFA+ 0.5)/((cFA+ 0.5) + cCR + 1)
 
-    dPrime = scipy.stats.norm.ppf(hitRateAdjusted) - scipy.stats.norm.ppf(faRateAdjusted)
-    #print dPrime
+    hitRate = float(cHit)/float(stim1Count)
+    faRate = float(cFA)/float(stim0Count)
+
+    dPrime = scipy.stats.norm.ppf(hitRate) - scipy.stats.norm.ppf(faRate)
     return dPrime
 
 d_prime(1)
@@ -151,9 +146,9 @@ dXvalues=[0,2,1,3]
 
 plt.bar(dXvalues,dData, color='black', width=0.2, align='center')
 plt.xticks(dXvalues, dNames)
-plt.ylabel('d"')
+plt.ylabel('d-prime')
 plt.xlabel('Confidence Ratings')
-plt.title(' d" of Each Confidence Rating')
+plt.title('d-prime of Each Confidence Rating')
 plt.show()
 
 #Problem 1 Question 5
@@ -167,24 +162,42 @@ plt.show()
 
 sIDl = proj['data']['stimID']
 sIDlist = list(sIDl[0][0][0])
+half=len(sIDlist)//2
+sIDfirst = sIDlist[:half]
+sIDsecond = sIDlist[half:]
+print "HERE"
+
 resL = proj['data']['response']
 resList = list(resL[0][0][0])
+half=len(resList)//2
+resLfirst = resList[:half]
+resLsecond = resList[half:]
+
 ratL = proj['data']['rating']
 ratList = list(ratL[0][0][0])
+half=len(sIDlist)//2
+ratFirst = ratList[:half]
+ratSecond = ratList[half:]
+print len(ratFirst)
+print len(ratSecond)
 
-# Create a pandas DataFrame
-# dic = {'stim_id': sIDlist, 'response': resList, 'rating': ratList}
-# df = pd.DataFrame.from_records([dic])
-meta_d_class=MetaD(sIDlist, resList,ratList, 4, 1)
+meta_d_classFirst=MetaD(sIDfirst, resLfirst,ratFirst, 4, 1)
+metaDfirst= meta_d_classFirst.meta_d_a
+print metaDfirst
 
-#print df
-# print meta_d_class
-# print meta_d_class.stim_id
-# print meta_d_class.response
-#print meta_d_class.data
-# print meta_d_class.nr_s1
-# print meta_d_class.nr_s2
+meta_d_classSecond=MetaD(sIDsecond, resLsecond,ratSecond, 4, 1)
+metaDsecond= meta_d_classSecond.meta_d_a
+print metaDsecond
+print "END"
 
-print meta_d_class.type2_sdt_sse()
-print meta_d_class.m_ratio
-print meta_d_class.meta_d_a
+mdGraph = {'First Half': metaDfirst,'Second Half':metaDsecond}
+mdNames = list(mdGraph.keys())
+mdData=list(mdGraph.values())
+mdXvalues=[1,0]
+
+plt.bar(mdXvalues,mdData, color='black', width=0.2, align='center')
+plt.xticks(mdXvalues, dNames)
+plt.ylabel('meta-d prime')
+plt.xlabel('Confidence Ratings')
+plt.title('meta-d prime of Each Confidence Rating')
+plt.show()
