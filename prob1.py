@@ -5,6 +5,10 @@ import json
 import scipy.io
 import struct
 from scipy import stats
+import pandas as pd
+from scipy.stats import norm
+
+from meta_d import MetaD 
 
 # Problem 1 Question 1
 
@@ -153,5 +157,19 @@ plt.title(' d" of Each Confidence Rating')
 plt.show()
 
 #Problem 1 Question 5
+print type(proj['data']['stimID'])
+print type(proj['data']['response'])
+print type(proj['data']['rating'])
+# Create a pandas DataFrame
+# dic = {'stim_id': proj['data']['stimID'], 'response': proj['data']['response'], 'rating': proj['data']['rating']}
+# df = pd.DataFrame.from_records([dic])
+meta_d_class=MetaD(proj['data']['stimID'], proj['data']['response'],proj['data']['rating'], 4)
 
+# print meta_d_class
+# print meta_d_class.stim_id
+# print meta_d_class.response
+print meta_d_class.data
+# print meta_d_class.nr_s1
+# print meta_d_class.nr_s2
 
+print meta_d_class.type2_sdt_sse()
