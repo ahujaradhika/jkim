@@ -1,5 +1,6 @@
 from psychopy import core, visual, gui, data, event, sound
 from psychopy.tools.filetools import fromFile, toFile
+import numpy as np
 import numpy, random
 from scipy import stats
 
@@ -7,12 +8,14 @@ from scipy import stats
 #please calibrate PsychoPy to match the monitor which it is using through Tools-->Monitor Center
 
 #create window & shapes
-mywin=visual.Window(size=[800,600], monitor="testMonitor", units="deg")
-shape = visual.Rect(win=mywin, units ='deg', size=[3,3], fillColor='white')
-#gabor = visual.GratingStim(win, tex='sin', mask='gauss', sf=5, name='gabor', autoLog=False)
+mywin=visual.Window(size=[800,600], monitor="testMonitor", units="deg") 
+square = visual.Rect(win=mywin, units ='deg', size=[3,3], fillColor='white') #tried to adjust for degree of visual angle here and right below
+gabor = visual.GratingStim(mywin, units ='deg', size=[3,3], tex='sin', mask='gauss', sf=5, name='gabor', autoLog=False)
 
 beep = sound.Sound(value='C', secs=0.5, octave=4, stereo=- 1, volume=1.0, loops=0, sampleRate=None, blockSize=128, preBuffer=- 1, hamming=True, startTime=0, stopTime=- 1, name='', autoLog=True)
 errorMsg = visual.TextStim(mywin, text='error', color='red')
+
+
 
 trialClock = core.Clock()
 
@@ -33,25 +36,33 @@ mywin.flip()#to show our newly drawn 'stimuli'
 #pause until there's a keypress
 event.waitKeys(keyList='space')
 
-
+orderList=[i for i in range(100)]
 for trial in trials:  # will continue the trials until it terminates!
         # set location of stimuli
         trialClock.reset()
-        shapeSide= random.choice([-1,1])  # will be either +1(right) or -1(left)
+        rand=np.random.choice(orderList)
+        if rand%2==0:
+            shape=gabor
+            oriList=[i for i in range(359)]
+            shape.ori=np.random.choice(oriList)
+            orderList.remove(rand)
+        else:
+            shape=square
+            orderList.remove(rand)
+        #shape=np.random.choice([gabor, square], p=[.5,.5])
+        shapeSide= np.random.choice([-1,1])  # will be either +1(right) or -1(left)
         shape.setPos([8*shapeSide, 0])
-        # if trialClock.getTime()<=1.0: #<---- THIS LINE NOT WORKING HERE
+        #if trialClock.getTime()<=1.0: <---- THIS LINE NOT WORKING HERE
         shape.draw()
         mywin.flip()
         #elif trialClock.getTime()>1.0: <---- THIS LINE NOT WORKING HERE
             #mywin.flip(clearBuffer=True)
-            
         # get response
         thisResp=None
         while thisResp==None:
             allKeys=event.waitKeys()
             for thisKey in allKeys:
                 if thisKey=='m':
-                    beep.play()
                     thisResp = 1 
                     if shapeSide==-1:
                         beep.play() #<----- THIS ONLY PLAYS IN FIRST TRIAL, NO SOUNDS PLAY AFTER FIRST TRIAL
