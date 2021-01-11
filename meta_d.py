@@ -95,12 +95,13 @@ class MetaD:
 
         # Create a pandas DataFrame
         dic = {'stim_id': stim_id, 'response': response, 'rating': rating}
-        d = pd.DataFrame.from_records([dic])
+        d = pd.DataFrame(dic)
 
         # Filter bad trials
         d = d[(d['stim_id'] == 0) | (d['stim_id'] == 1)]
         d = d[(d['response'] == 0) | (d['response'] == 1)]
         d = d[(d['rating'] >= 1) & (d['rating'] <= num_ratings)]
+
 
         # Process data
         nr_s1 = np.zeros([num_ratings * 2, ], dtype=int)
@@ -108,17 +109,20 @@ class MetaD:
         s1_only = d[d['response'] == 0]
         s2_only = d[d['response'] == 1]
 
+
         for j in range(num_ratings, 0, -1):
             nr_s1[num_ratings - j] = s1_only[(s1_only['stim_id'] == 0) & (s1_only['rating'] == j)].shape[0]
             nr_s2[num_ratings - j] = s1_only[(s1_only['stim_id'] == 1) & (s1_only['rating'] == j)].shape[0]
+
 
         for j in range(1, num_ratings + 1):
             nr_s1[num_ratings - 1 + j] = s2_only[(s2_only['stim_id'] == 0) & (s2_only['rating'] == j)].shape[0]
             nr_s2[num_ratings - 1 + j] = s2_only[(s2_only['stim_id'] == 1) & (s2_only['rating'] == j)].shape[0]
 
+
         if pad_cells:
-            nr_s1 += pad_amount
-            nr_s2 += pad_amount
+            nr_s1 = nr_s1 + pad_amount
+            nr_s2 = nr_s2 + pad_amount
 
         self.stim_id = stim_id
         self.response = response
@@ -180,6 +184,7 @@ class MetaD:
         hr1 = sum(self.nr_s2[num_ratings:]) / float(sum(self.nr_s2))
         far1 = sum(self.nr_s1[num_ratings:]) / float(sum(self.nr_s1))
 
+
         rating_hrs = np.zeros([2 * num_ratings - 1, ], dtype=float)
         rating_fars = np.zeros([2 * num_ratings - 1, ], dtype=float)
         for i in range(2 * num_ratings - 2):
@@ -189,6 +194,7 @@ class MetaD:
         s = 1
 
         # d' and c in terms of S1 distribution standard deviation units
+
         d_1 = (1.0 / s) * norm.ppf(hr1) - norm.ppf(far1)
         c_1 = (-1.0 / (1 + s)) * (norm.ppf(hr1) + norm.ppf(far1))
         cprime = c_1 / d_1

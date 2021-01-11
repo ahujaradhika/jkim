@@ -1,8 +1,11 @@
+from psychopy import prefs
+prefs.hardware['audioLib'] =  ['PTB', 'sounddevice', 'pyo', 'pygame']
 from psychopy import core, visual, gui, data, event, sound
 from psychopy.tools.filetools import fromFile, toFile
 import numpy as np
 import numpy, random
 from scipy import stats
+
 
 #degrees of visual angle:
 #please calibrate PsychoPy to match the monitor which it is using through Tools-->Monitor Center
@@ -25,6 +28,7 @@ trials = data.TrialHandler(pResponses, 3, method='random')
 trials.data.addDataType('stimID')
 trials.data.addDataType('response')
 trials.data.addDataType('responseRT')
+trials.data.addDataType('stimType')
 
 # display instructions and wait
 message1 = visual.TextStim(mywin, pos=[0,+3],text='Hit the space key when ready.')

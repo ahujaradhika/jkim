@@ -157,19 +157,34 @@ plt.title(' d" of Each Confidence Rating')
 plt.show()
 
 #Problem 1 Question 5
-print type(proj['data']['stimID'])
-print type(proj['data']['response'])
-print type(proj['data']['rating'])
-# Create a pandas DataFrame
-# dic = {'stim_id': proj['data']['stimID'], 'response': proj['data']['response'], 'rating': proj['data']['rating']}
-# df = pd.DataFrame.from_records([dic])
-meta_d_class=MetaD(proj['data']['stimID'], proj['data']['response'],proj['data']['rating'], 4)
+# print type(proj['data']['stimID'])
+# print "STIM ID ARRAY"
+# print proj['data']['stimID']
 
+# print type(proj['data']['response'])
+# print type(proj['data']['rating'])
+
+
+sIDl = proj['data']['stimID']
+sIDlist = list(sIDl[0][0][0])
+resL = proj['data']['response']
+resList = list(resL[0][0][0])
+ratL = proj['data']['rating']
+ratList = list(ratL[0][0][0])
+
+# Create a pandas DataFrame
+# dic = {'stim_id': sIDlist, 'response': resList, 'rating': ratList}
+# df = pd.DataFrame.from_records([dic])
+meta_d_class=MetaD(sIDlist, resList,ratList, 4, 1)
+
+#print df
 # print meta_d_class
 # print meta_d_class.stim_id
 # print meta_d_class.response
-print meta_d_class.data
+#print meta_d_class.data
 # print meta_d_class.nr_s1
 # print meta_d_class.nr_s2
 
 print meta_d_class.type2_sdt_sse()
+print meta_d_class.m_ratio
+print meta_d_class.meta_d_a
