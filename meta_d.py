@@ -95,7 +95,7 @@ class MetaD:
 
         # Create a pandas DataFrame
         dic = {'stim_id': stim_id, 'response': response, 'rating': rating}
-        d = pd.DataFrame(dic)
+        d = pd.DataFrame.from_records([dic])
 
         # Filter bad trials
         d = d[(d['stim_id'] == 0) | (d['stim_id'] == 1)]
