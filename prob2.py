@@ -23,6 +23,7 @@ timer = core.CountdownTimer(1)
 
 pResponses = []
 # create the experiment/trial? handler
+experiment = data.ExperimentHandler(dataFileName="results")
 trials = data.TrialHandler(pResponses, 3, method='random')
 trials.data.addDataType('stimType')
 trials.data.addDataType('stimSide')
@@ -73,7 +74,6 @@ for trial in trials:  # will continue the trials until it terminates!
                     if (shapeType==0 and shapeSide==-1) or (shapeType==1 and shapeSide==1):
                         beep.play()
                         errorMsg.setPos([8*shapeSide, 0])
-                        #if trialClock.getTime()<=1.0: <---- THIS LINE NOT WORKING HERE 
                         shape.draw()
                         errorMsg.draw()
                         mywin.flip()
@@ -82,7 +82,6 @@ for trial in trials:  # will continue the trials until it terminates!
                     if (shapeType==0 and shapeSide==1) or (shapeType==1 and shapeSide==-1):
                         beep.play()
                         errorMsg.setPos([8*shapeSide, 0])
-                        #if trialClock.getTime()<=1.0: <---- THIS LINE NOT WORKING HERE
                         shape.draw()
                         errorMsg.draw()
                         mywin.flip()
@@ -97,9 +96,16 @@ for trial in trials:  # will continue the trials until it terminates!
         trials.data.add('stimSide', shapeSide)
         trials.data.add('response', thisResp)
         trials.data.add('responseRT',trialClock.getTime())
+        
+        experiment.addData('stimType', shapeType)
+        experiment.addData('stimSide', shapeSide)
+        experiment.addData('response', thisResp)
+        experiment.addData('responseRT',trialClock.getTime())
+        experiment.nextEntry()
         core.wait(1.5)
 
 print (pResponses)
+experiment.close()
 #dataFile.close()
 #staircase.saveAsPickle(fileName) 
 
