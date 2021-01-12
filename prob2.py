@@ -13,7 +13,7 @@ from scipy import stats
 #create window & shapes
 mywin=visual.Window(size=[800,600], monitor="testMonitor", units="deg") 
 square = visual.Rect(win=mywin, units ='deg', size=[3,3], fillColor='white') #tried to adjust for degree of visual angle here and right below
-gabor = visual.GratingStim(mywin, units ='deg', size=[3,3], tex='sin', mask='gauss', sf=5, name='gabor', autoLog=False)
+gabor = visual.GratingStim(mywin, units ='deg', size=[3,3], tex='sin', mask='gauss', sf=5, name='gabor', contrast=.5, autoLog=False)
 
 beep = sound.Sound(value='C', secs=0.5, octave=4, stereo=- 1, volume=1.0, loops=0, sampleRate=None, blockSize=128, preBuffer=- 1, hamming=True, startTime=0, stopTime=- 1, name='', autoLog=True)
 errorMsg = visual.TextStim(mywin, text='error', color='red')
@@ -73,7 +73,6 @@ for trial in trials:  # will continue the trials until it terminates!
                     if (shapeType==0 and shapeSide==-1) or (shapeType==1 and shapeSide==1):
                         beep.play()
                         errorMsg.setPos([8*shapeSide, 0])
-                        #if trialClock.getTime()<=1.0: <---- THIS LINE NOT WORKING HERE 
                         shape.draw()
                         errorMsg.draw()
                         mywin.flip()
@@ -82,7 +81,6 @@ for trial in trials:  # will continue the trials until it terminates!
                     if (shapeType==0 and shapeSide==1) or (shapeType==1 and shapeSide==-1):
                         beep.play()
                         errorMsg.setPos([8*shapeSide, 0])
-                        #if trialClock.getTime()<=1.0: <---- THIS LINE NOT WORKING HERE
                         shape.draw()
                         errorMsg.draw()
                         mywin.flip()
