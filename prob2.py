@@ -44,6 +44,7 @@ orderList=[i for i in range(100)]
 for trial in trials:  # will continue the trials until it terminates!
         # set location of stimuli
         trialClock.reset()
+        timer = core.CountdownTimer(1)
         rand=np.random.choice(orderList)
         if rand%2==0:
             shape=gabor
@@ -56,11 +57,10 @@ for trial in trials:  # will continue the trials until it terminates!
         #shape=np.random.choice([gabor, square], p=[.5,.5])
         shapeSide= np.random.choice([-1,1])  # will be either +1(right) or -1(left)
         shape.setPos([8*shapeSide, 0])
-        #if trialClock.getTime()<=1.0: <---- THIS LINE NOT WORKING HERE
-        shape.draw()
-        mywin.flip()
-        #elif trialClock.getTime()>1.0: <---- THIS LINE NOT WORKING HERE
-            #mywin.flip(clearBuffer=True)
+        while timer.getTime()>0:
+            shape.draw()
+            mywin.flip()
+        mywin.flip(clearBuffer=True)
         # get response
         thisResp=None
         while thisResp==None:
@@ -69,7 +69,7 @@ for trial in trials:  # will continue the trials until it terminates!
                 if thisKey=='m':
                     thisResp = 1 
                     if shapeSide==-1:
-                        beep.play() #<----- THIS ONLY PLAYS IN FIRST TRIAL, NO SOUNDS PLAY AFTER FIRST TRIAL
+                        beep.play()
                         errorMsg.setPos([8*shapeSide, 0])
                         #if trialClock.getTime()<=1.0: <---- THIS LINE NOT WORKING HERE 
                         shape.draw()
@@ -79,7 +79,7 @@ for trial in trials:  # will continue the trials until it terminates!
                 elif thisKey=='z':
                     thisResp = -1
                     if shapeSide==1:
-                        beep.play() #<----- THIS ONLY PLAYS IN FIRST TRIAL, NO SOUNDS PLAY AFTER FIRST TRIAL
+                        beep.play()
                         errorMsg.setPos([8*shapeSide, 0])
                         #if trialClock.getTime()<=1.0: <---- THIS LINE NOT WORKING HERE
                         shape.draw()
