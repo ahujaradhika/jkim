@@ -152,12 +152,6 @@ plt.title('d-prime of Each Confidence Rating')
 plt.show()
 
 #Problem 1 Question 5
-# print type(proj['data']['stimID'])
-# print "STIM ID ARRAY"
-# print proj['data']['stimID']
-
-# print type(proj['data']['response'])
-# print type(proj['data']['rating'])
 
 
 sIDl = proj['data']['stimID']
@@ -165,7 +159,6 @@ sIDlist = list(sIDl[0][0][0])
 half=len(sIDlist)//2
 sIDfirst = sIDlist[:half]
 sIDsecond = sIDlist[half:]
-print "HERE"
 
 resL = proj['data']['response']
 resList = list(resL[0][0][0])
@@ -178,19 +171,14 @@ ratList = list(ratL[0][0][0])
 half=len(sIDlist)//2
 ratFirst = ratList[:half]
 ratSecond = ratList[half:]
-print len(ratFirst)
-print len(ratSecond)
 
 meta_d_classFirst=MetaD(sIDfirst, resLfirst,ratFirst, 4, 1)
 meta_d_classFirst.type2_sdt_sse()
 metaDfirst= meta_d_classFirst.meta_d_a
-print metaDfirst
 
 meta_d_classSecond=MetaD(sIDsecond, resLsecond,ratSecond, 4, 1)
 meta_d_classSecond.type2_sdt_sse()
 metaDsecond= meta_d_classSecond.meta_d_a
-print metaDsecond
-print "END"
 
 mdGraph = {'First Half': metaDfirst,'Second Half':metaDsecond}
 mdNames = list(mdGraph.keys())
@@ -200,6 +188,7 @@ mdXvalues=[1,0]
 plt.bar(mdXvalues,mdData, color='black', width=0.2, align='center')
 plt.xticks(mdXvalues, mdNames)
 plt.ylabel('meta-d prime')
+plt.ylim([0,.7])
 plt.xlabel('Experiment Halves')
 plt.title('meta-d prime of Each Half of the Experiment')
 plt.show()
