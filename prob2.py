@@ -18,18 +18,17 @@ gabor = visual.GratingStim(mywin, units ='deg', size=[3,3], tex='sin', mask='gau
 beep = sound.Sound(value='C', secs=0.5, octave=4, stereo=- 1, volume=1.0, loops=0, sampleRate=None, blockSize=128, preBuffer=- 1, hamming=True, startTime=0, stopTime=- 1, name='', autoLog=True)
 errorMsg = visual.TextStim(mywin, text='error', color='red')
 
-
-
 trialClock = core.Clock()
 timer = core.CountdownTimer(1)
 
 pResponses = []
 # create the experiment/trial? handler
 trials = data.TrialHandler(pResponses, 3, method='random')
-trials.data.addDataType('stimID')
+trials.data.addDataType('stimType')
+trials.data.addDataType('stimSide')
 trials.data.addDataType('response')
 trials.data.addDataType('responseRT')
-trials.data.addDataType('stimType')
+
 
 # display instructions and wait
 message1 = visual.TextStim(mywin, pos=[0,+3],text='Hit the space key when ready.')
@@ -49,11 +48,13 @@ for trial in trials:  # will continue the trials until it terminates!
         rand=np.random.choice(orderList)
         if rand%2==0:
             shape=gabor
+            shapeType=1
             oriList=[i for i in range(359)]
             shape.ori=np.random.choice(oriList)
             orderList.remove(rand)
         else:
             shape=square
+            shapeType=0
             orderList.remove(rand)
         #shape=np.random.choice([gabor, square], p=[.5,.5])
         shapeSide= np.random.choice([-1,1])  # will be either +1(right) or -1(left)
@@ -65,35 +66,35 @@ for trial in trials:  # will continue the trials until it terminates!
         # get response
         thisResp=None
         while thisResp==None:
-            allKeys=event.waitKeys()
+            allKeys=event.getKeys()
             for thisKey in allKeys:
                 if thisKey=='m':
                     thisResp = 1 
-                    if shapeSide==-1:
+                    if (shapeType==0 and shapeSide==-1) or (shapeType==1 and shapeSide==1):
                         beep.play()
                         errorMsg.setPos([8*shapeSide, 0])
                         #if trialClock.getTime()<=1.0: <---- THIS LINE NOT WORKING HERE 
                         shape.draw()
                         errorMsg.draw()
                         mywin.flip()
-                        core.wait(.3)
                 elif thisKey=='z':
                     thisResp = -1
-                    if shapeSide==1:
+                    if (shapeType==0 and shapeSide==1) or (shapeType==1 and shapeSide==-1):
                         beep.play()
                         errorMsg.setPos([8*shapeSide, 0])
                         #if trialClock.getTime()<=1.0: <---- THIS LINE NOT WORKING HERE
                         shape.draw()
                         errorMsg.draw()
                         mywin.flip()
-                        core.wait(.3)
                 elif thisKey in ['q', 'escape']:
                     core.quit()  # abort experiment
+        core.wait(.3)
         event.clearEvents()  # clear other (eg mouse) events - they clog the buffer
         mywin.flip(clearBuffer=True)
         # add the data to the trial to go to the next iteration
-        pResponses.append({'stimID':shapeSide, 'response':thisResp, 'responseRT':trialClock.getTime()})
-        trials.data.add('stimID', shapeSide)
+        pResponses.append({'stimType':shapeType,'stimSide':shapeSide, 'response':thisResp, 'responseRT':trialClock.getTime()})
+        trials.data.add('stimType',shapeType)
+        trials.data.add('stimSide', shapeSide)
         trials.data.add('response', thisResp)
         trials.data.add('responseRT',trialClock.getTime())
         core.wait(1.5)
