@@ -21,6 +21,7 @@ errorMsg = visual.TextStim(mywin, text='error', color='red')
 
 
 trialClock = core.Clock()
+timer = core.CountdownTimer(1)
 
 pResponses = []
 # create the experiment/trial? handler
@@ -44,7 +45,7 @@ orderList=[i for i in range(100)]
 for trial in trials:  # will continue the trials until it terminates!
         # set location of stimuli
         trialClock.reset()
-        timer = core.CountdownTimer(1)
+        timer.reset()
         rand=np.random.choice(orderList)
         if rand%2==0:
             shape=gabor
