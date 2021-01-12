@@ -140,7 +140,7 @@ class MetaD:
         self.m_diff = None
         self.s = None
         self.type2_fit_mle = None
-
+        
     def type2_sdt_sse(self, d_min=-5, d_max=5, d_grain=0.01):
         """This method estimates meta-d' by minimizing the sum of squared errors (SSE)
         By calling it, the following attributes are added to the MetaD class instance

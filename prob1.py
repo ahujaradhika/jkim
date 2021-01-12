@@ -182,10 +182,12 @@ print len(ratFirst)
 print len(ratSecond)
 
 meta_d_classFirst=MetaD(sIDfirst, resLfirst,ratFirst, 4, 1)
+meta_d_classFirst.type2_sdt_sse()
 metaDfirst= meta_d_classFirst.meta_d_a
 print metaDfirst
 
 meta_d_classSecond=MetaD(sIDsecond, resLsecond,ratSecond, 4, 1)
+meta_d_classSecond.type2_sdt_sse()
 metaDsecond= meta_d_classSecond.meta_d_a
 print metaDsecond
 print "END"
@@ -196,8 +198,8 @@ mdData=list(mdGraph.values())
 mdXvalues=[1,0]
 
 plt.bar(mdXvalues,mdData, color='black', width=0.2, align='center')
-plt.xticks(mdXvalues, dNames)
+plt.xticks(mdXvalues, mdNames)
 plt.ylabel('meta-d prime')
-plt.xlabel('Confidence Ratings')
-plt.title('meta-d prime of Each Confidence Rating')
+plt.xlabel('Experiment Halves')
+plt.title('meta-d prime of Each Half of the Experiment')
 plt.show()
