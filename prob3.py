@@ -33,16 +33,16 @@ def run_trial(mu_non_target, sigma_non_target, mu_target, sigma_target, num_of_t
     fa = df.response[~df.stim]
     cr = ~df.response[~df.stim]
 
-    print("Hit rate: {:.2f}".format(hit.mean()))
-    print("Miss rate: {:.2f}".format(miss.mean()))
-    print("False alarm rate: {:.2f}".format(fa.mean()))
-    print("Correct rejection rate: {:.2f}".format(cr.mean()))
+    # print("Hit rate: {:.2f}".format(hit.mean()))
+    # print("Miss rate: {:.2f}".format(miss.mean()))
+    # print("False alarm rate: {:.2f}".format(fa.mean()))
+    # print("Correct rejection rate: {:.2f}".format(cr.mean()))
 
     dprime = stats.norm.ppf(hit.mean()) - stats.norm.ppf(fa.mean())
-    print("d prime: {:.2f}".format(dprime))
+    # print("d prime: {:.2f}".format(dprime))
 
     c = -(stats.norm.ppf(hit.mean()) + stats.norm.ppf(fa.mean()))/2.0
-    print("c: {:.2f}".format(c))
+    # print("c: {:.2f}".format(c))
 
     return (stim, nTarget, c)
 
