@@ -18,8 +18,8 @@ num_of_trials = 200
 def run_trial(mu_target, sigma_target, mu_non_target, sigma_non_target, num_of_trials, size):
 
     # Create distributions
-    target_dist = np.random.normal(mu_target, sigma_target, size_of_distribution)
-    non_target_dist = np.random.normal(mu_non_target, sigma_non_target, size_of_distribution)
+    target_dist = stats.norm.pdf(mu_target, sigma_target, size_of_distribution)
+    non_target_dist = stats.norm.pdf(mu_non_target, sigma_non_target, size_of_distribution)
 
     # c is the criteria: midpoint of the two means
     c = (mu_target - mu_non_target)/2
