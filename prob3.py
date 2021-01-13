@@ -10,62 +10,73 @@ from scipy.stats import norm
 
 # trial parameters
 size_of_distribution = 5
-mu_target, sigma_target = 2, 1 # mean and standard deviation of target distribution
-mu_non_target, sigma_non_target = 0.5, 1 # mean and standard deviation of non-target distribution
+mu_non_target, sigma_non_target = 0, 1 # mean and standard deviation of nTarget distribution
+mu_target, sigma_target = 1.5, 1.5 # mean and standard deviation of non-nTarget distribution
 num_of_trials = 200
+# c is the criteria: midpoint of the two means
+crit = ((mu_target-mu_non_target)/2)
 
 
-def run_trial(mu_target, sigma_target, mu_non_target, sigma_non_target, num_of_trials, size):
+def run_trial(mu_non_target, sigma_non_target, mu_target, sigma_target, num_of_trials, size, crit):
+
+    stim = np.random.rand(num_of_trials) > .5
 
     # Create distributions
-    target_dist = stats.norm.pdf(mu_target, sigma_target, size_of_distribution)
-    non_target_dist = stats.norm.pdf(mu_non_target, sigma_non_target, size_of_distribution)
+    nTarget = np.random.normal(mu_non_target, sigma_non_target, size=stim.size)
+    nTarget[stim] = np.random.normal(mu_target, sigma_target, size=stim.sum())
+    df=pd.DataFrame({"trial": range(len(nTarget)), "stim": stim, "nTarget": nTarget})
 
-    # c is the criteria: midpoint of the two means
-    c = (mu_target - mu_non_target)/2
+    df['response'] = df.nTarget > crit
 
-    yes_count = 0
-    no_count = 0
-    hitCount = 0
-    faCount = 0
-    stimCount = 0
-    noStimCount = 0
-    orderList=[i for i in range(100)]
+    hit = df.response[df.stim]
+    miss = ~df.response[df.stim]
+    fa = df.response[~df.stim]
+    cr = ~df.response[~df.stim]
+
+    print("Hit rate: {:.2f}".format(hit.mean()))
+    print("Miss rate: {:.2f}".format(miss.mean()))
+    print("False alarm rate: {:.2f}".format(fa.mean()))
+    print("Correct rejection rate: {:.2f}".format(cr.mean()))
+
+    dprime = stats.norm.ppf(hit.mean()) - stats.norm.ppf(fa.mean())
+    print("d prime: {:.2f}".format(dprime))
+
+    c = -(stats.norm.ppf(hit.mean()) + stats.norm.ppf(fa.mean()))/2.0
+    print("c: {:.2f}".format(c))
+
+    return (stim, nTarget, c)
+
+result_200 = run_trial(mu_non_target, sigma_non_target, mu_target, sigma_target, 200, size_of_distribution, crit)
+stim = result_200[0]
+nTarget = result_200[1]
+c = result_200[2]
+
+criterions = np.linspace(crit+(2*sigma_target), crit-(2*sigma_target), 5)
+hit_rates = [(nTarget[stim] > c).mean() for c in criterions]
+fa_rates = [(nTarget > c).mean() for c in criterions]
+
+plt.plot(fa_rates, hit_rates, color='black')
+plt.ylim([0,1])
+plt.xlim([0,1])
+plt.ylabel('Hit Rate')
+plt.xlabel('FA Rate')
+plt.title('ROC Plot w/ 200 trials')
+plt.show()
 
 
-    for i in range(num_of_trials):
-        chance = np.random.choice(orderList)
-        if chance %2 == 0:
-            val = np.random.choice(target_dist, 1, replace=False)
-            stimCount += 1
-            if val > c:
-                yes_count += 1
-                hitCount +=1
-            else:
-                no_count += 1
-        else:
-            val = np.random.choice(non_target_dist, 1, replace=False)
-            noStimCount += 1
-            if val > c:
-                yes_count += 1
-                faCount +=1
-            else:
-                no_count += 1
-    
-    hitRate = float(hitCount)/float(stimCount)
-    faRate = float(faCount)/float(noStimCount)
-    print (hitCount)
-    print (faCount)
-    print (stimCount)
-    print (noStimCount)
-    print (hitRate)
-    print (faRate)
+result_30 = run_trial(mu_non_target, sigma_non_target, mu_target, sigma_target, 30, size_of_distribution, crit)
+stim = result_30[0]
+nTarget = result_30[1]
+c = result_30[2]
 
-    dPrime = scipy.stats.norm.ppf(hitRate) - scipy.stats.norm.ppf(faRate)
+criterions = np.linspace(crit+(2*sigma_target), crit-(2*sigma_target), 5)
+hit_rates = [(nTarget[stim] > c).mean() for c in criterions]
+fa_rates = [(nTarget > c).mean() for c in criterions]
 
-    print(yes_count)
-    print(no_count)
-
-    return (yes_count/no_count, dPrime)
-
-print(run_trial(mu_target, sigma_target, mu_non_target, sigma_non_target, num_of_trials, size_of_distribution))
+plt.plot(fa_rates, hit_rates, color='black')
+plt.ylim([0,1])
+plt.xlim([0,1])
+plt.ylabel('Hit Rate')
+plt.xlabel('FA Rate')
+plt.title('ROC Plot w/ 30 trials')
+plt.show()

@@ -19,7 +19,7 @@ beep = sound.Sound(value='C', secs=0.5, octave=4, stereo=- 1, volume=1.0, loops=
 errorMsg = visual.TextStim(mywin, text='error', color='red')
 
 trialClock = core.Clock()
-timer = core.CountdownTimer(1)
+timer = core.CountdownTimer(.5)
 
 pResponses = []
 # create the experiment/trial? handler
