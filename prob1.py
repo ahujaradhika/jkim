@@ -37,7 +37,7 @@ plt.bar(expXvalues,expData, yerr=expError, ecolor = 'black', color='black', widt
 plt.xticks(expXvalues, expNames)
 plt.ylabel('Mean Reaction Time')
 plt.xlabel('Experiment Halves')
-plt.title(' Mean Reaction Time of Each Half of the Experiment')
+plt.title('Mean Reaction Time of Each Half of the Experiment')
 plt.show()
 
 

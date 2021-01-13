@@ -19,16 +19,17 @@ beep = sound.Sound(value='C', secs=0.5, octave=4, stereo=- 1, volume=1.0, loops=
 errorMsg = visual.TextStim(mywin, text='error', color='red')
 
 trialClock = core.Clock()
-timer = core.CountdownTimer(1)
+timer = core.CountdownTimer(.5)
 
 pResponses = []
 # create the experiment/trial? handler
 experiment = data.ExperimentHandler(dataFileName="results")
-trials = data.TrialHandler(pResponses, 3, method='random')
+trials = data.TrialHandler(pResponses, 100, method='random')
 trials.data.addDataType('stimType')
 trials.data.addDataType('stimSide')
 trials.data.addDataType('response')
 trials.data.addDataType('responseRT')
+trials.data.addDataType('error')
 
 
 # display instructions and wait
@@ -46,6 +47,7 @@ for trial in trials:  # will continue the trials until it terminates!
         # set location of stimuli
         trialClock.reset()
         timer.reset()
+        error = 0
         rand=np.random.choice(orderList)
         if rand%2==0:
             shape=gabor
@@ -77,6 +79,7 @@ for trial in trials:  # will continue the trials until it terminates!
                         shape.draw()
                         errorMsg.draw()
                         mywin.flip()
+                        error = 1
                 elif thisKey=='z':
                     thisResp = -1
                     if (shapeType==0 and shapeSide==1) or (shapeType==1 and shapeSide==-1):
@@ -85,22 +88,25 @@ for trial in trials:  # will continue the trials until it terminates!
                         shape.draw()
                         errorMsg.draw()
                         mywin.flip()
+                        error = 1
                 elif thisKey in ['q', 'escape']:
                     core.quit()  # abort experiment
         core.wait(.3)
         event.clearEvents()  # clear other (eg mouse) events - they clog the buffer
         mywin.flip(clearBuffer=True)
         # add the data to the trial to go to the next iteration
-        pResponses.append({'stimType':shapeType,'stimSide':shapeSide, 'response':thisResp, 'responseRT':trialClock.getTime()})
+        pResponses.append({'stimType':shapeType,'stimSide':shapeSide, 'response':thisResp, 'responseRT':trialClock.getTime(), 'error':error})
         trials.data.add('stimType',shapeType)
         trials.data.add('stimSide', shapeSide)
         trials.data.add('response', thisResp)
         trials.data.add('responseRT',trialClock.getTime())
+        trials.data.add('error',error)
         
         experiment.addData('stimType', shapeType)
         experiment.addData('stimSide', shapeSide)
         experiment.addData('response', thisResp)
         experiment.addData('responseRT',trialClock.getTime())
+        experiment.addData('error',error)
         experiment.nextEntry()
         core.wait(1.5)
 
